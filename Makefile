@@ -9,8 +9,8 @@ verify-glide-installation:
 
 install-vendor: verify-glide-installation
 	glide install --strip-vendor
-	glide-vc
+	glide-vc --use-lock-file
 
 update-vendor: verify-glide-installation
 	glide update --strip-vendor
-	glide-vc
+	glide-vc --use-lock-file
