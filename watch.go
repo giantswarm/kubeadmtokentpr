@@ -38,7 +38,7 @@ func FindToken(k8sClient kubernetes.Interface, clusterID string) (string, error)
 
 	_, clusterInformer := cache.NewInformer(
 		listWatch,
-		&CustomObject{},
+		&v1.Secret{},
 		WatchTimeout,
 		cache.ResourceEventHandlerFuncs{
 			AddFunc: func(obj interface{}) {
