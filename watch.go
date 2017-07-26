@@ -50,21 +50,20 @@ func FindToken(k8sClient kubernetes.Interface, clusterID string) (string, error)
 
 				token := string(bToken[:])
 
-				// If token was successfully found, send the token and stop the watcher.
+				// If token was successfully found, send the token.
 				kubeadmTokenChan <- token
-				stopChan <- struct{}{}
 			},
 		},
 	)
 
-	clusterInformer.Run(stopChan)
+	go clusterInformer.Run(stopChan)
+	// Stop the watcher if any result or error will be received.
+	defer close(stopChan)
 
 	select {
 	case token := <-kubeadmTokenChan:
 		return token, nil
 	case <-time.After(WatchTimeout):
-		// If timeout is exceeded, stop the watcher and return an error.
-		stopChan <- struct{}{}
 		return "", microerror.MaskAny(tokenRetrievalFailedError)
 	}
 }
